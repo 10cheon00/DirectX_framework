@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3DPractice", "D3DPractice\D3DPractice.vcxproj", "{CD0034F5-6167-4444-B237-B583A5F899B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Debug|x64.ActiveCfg = Debug|x64
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Debug|x64.Build.0 = Debug|x64
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Debug|x86.ActiveCfg = Debug|Win32
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Debug|x86.Build.0 = Debug|Win32
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Release|x64.ActiveCfg = Release|x64
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Release|x64.Build.0 = Release|x64
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Release|x86.ActiveCfg = Release|Win32
+		{CD0034F5-6167-4444-B237-B583A5F899B4}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B39622E7-D642-4725-A60D-C4D3F0877787}
+	EndGlobalSection
+EndGlobal
