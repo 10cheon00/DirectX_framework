@@ -94,7 +94,7 @@ bool RenderWindow::ProcessMessages()
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
 
-	if (PeekMessage(&msg, this->handle, 0, 0,
+	while (PeekMessage(&msg, this->handle, 0, 0,
 		PM_REMOVE)) {	//Remove message after capturing it via PeekMessage.
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -108,4 +108,9 @@ bool RenderWindow::ProcessMessages()
 		}
 	}
 	return true;
+}
+
+HWND RenderWindow::GetHWND() const
+{
+	return this->handle;
 }
