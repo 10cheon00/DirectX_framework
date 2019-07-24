@@ -12,3 +12,9 @@ int APIENTRY  wWinMain(_In_ HINSTANCE hInstance,
 	}
 	return 0;
 }
+
+//input assembler	completed
+//vertex shader		completed
+//rasterizer
+//pixel shader
+//output merger

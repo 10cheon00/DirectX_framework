@@ -11,3 +11,10 @@ void ErrorLogger::Log(HRESULT hr, std::string message) {
 	std::wstring error_msg = L"Error: " + StringConverter::StringToWide(message) + L'\n' + error.ErrorMessage();
 	MessageBoxW(NULL, error_msg.c_str(), L"Error", MB_ICONERROR);
 }
+
+void ErrorLogger::Log(HRESULT hr, std::wstring message){
+	_com_error error(hr);
+	std::wstring error_msg = L"Error: " + message + L'\n' + error.ErrorMessage();
+	MessageBoxW(NULL, error_msg.c_str(), L"Error", MB_ICONERROR);
+
+}

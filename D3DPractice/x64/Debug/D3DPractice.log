@@ -1,2 +1,4 @@
-﻿  WinMain.cpp
+﻿  Graphics.cpp
+  Shaders.cpp
+  Generating Code...
   D3DPractice.vcxproj -> C:\Users\Kim Taekcheon\source\repos\D3DPractice\x64\Debug\D3DPractice.exe

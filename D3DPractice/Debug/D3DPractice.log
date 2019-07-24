@@ -1,2 +1,12 @@
-﻿  Graphics.cpp
+﻿  compilation object save succeeded; see C:\Users\Kim Taekcheon\source\repos\D3DPractice\Debug\vertexshader.cso
+  AdapterReader.cpp
+  Engine.cpp
+  ErrorLogger.cpp
+  Graphics.cpp
+  RenderWindow.cpp
+  Shaders.cpp
+  WindowContainer.cpp
+  WinMain.cpp
+  Generating Code...
+  C:\Users\Kim Taekcheon\source\repos\D3DPractice\D3DPractice\WindowContainer.cpp(141) : warning C4715: 'WindowContainer::WindowProc': not all control paths return a value
   D3DPractice.vcxproj -> C:\Users\Kim Taekcheon\source\repos\D3DPractice\Debug\D3DPractice.exe
