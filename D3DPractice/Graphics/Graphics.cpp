@@ -7,16 +7,36 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 	if (!InitializeDirectX(hwnd, width, height))
 		return false;
 
-	if (!InistializeShaders())
+	if (!InitializeShaders())
 		return false;
+
+	if (!InitializeScene())
+		return false;
+
+
 	return true;
 }
 
 void Graphics::RenderFrame()
 {
 	float bgcolor[] = { 1.0f,0.0f,1.0f,1.0f };
-	this->deviceContext->ClearRenderTargetView(
-		this->renderTargetView.Get(), bgcolor);
+	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
+
+	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputlayout());
+	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
+	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	this->deviceContext->IASetVertexBuffers(
+		0, 
+		1, 
+		vertexBuffer.GetAddressOf(), 
+		&stride, &offset);
+
+
+	this->deviceContext->Draw(3, 0);
 	this->swapChain->Present(1/*vsync option*/, NULL);
 }
 
@@ -30,7 +50,7 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
 	}
 
 	DXGI_SWAP_CHAIN_DESC scd;
-	ZeroMemory(&scd,sizeof(DXGI_SWAP_CHAIN_DESC));
+	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
 	scd.BufferDesc.Width = width;
 	scd.BufferDesc.Height = height;
@@ -47,12 +67,12 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
 	scd.BufferCount = 1;
 	scd.OutputWindow = hwnd;
 	scd.Windowed = TRUE;
-	scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; 
+	scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	HRESULT hr;
 
-	hr= D3D11CreateDeviceAndSwapChain(
+	hr = D3D11CreateDeviceAndSwapChain(
 		adapters[0].pAdapter,	//IDXGIAdapter
 		D3D_DRIVER_TYPE_UNKNOWN,
 		NULL,	//For Software driver type
@@ -81,48 +101,89 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
 
 	this->deviceContext->OMSetRenderTargets(1, this->renderTargetView.GetAddressOf(), NULL);
 
+	D3D11_VIEWPORT viewport;
+	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = width;
+	viewport.Height = height;
+
+	//Set the viewport.
+	this->deviceContext->RSSetViewports(1, &viewport);
+
 	return true;
 }
 
-bool Graphics::InistializeShaders()
+bool Graphics::InitializeShaders()
 {
-	std::wstring shaderfolder;
+	std::wstring shaderfolder = L"";
 #pragma region DetermineShaderPath
 	if (IsDebuggerPresent() == TRUE) {
-	#ifdef _DEBUG
-		#ifdef _WIN64
-				shaderfolder = L"..\\x64\\Debug\\";
-		#else
-				shaderfolder = L"..\\Debug\\";
-		#endif
-	#else	//ReleaseMode
-		#ifdef _WIN64
-				shaderfolder = L"..\\x64\\Release\\";
-		#else
-				shaderfolder = L"..\\Release\\";
-		#endif
+#ifdef _DEBUG	//Debug Mode
+#ifdef _WIN64	//x64
+		shaderfolder = L"..\\x64\\Debug\\";
+#else			//x86
+		shaderfolder = L"..\\Debug\\";
+#endif
+#else	//Release Mode
+#ifdef _WIN64	//x64
+		shaderfolder = L"..\\x64\\Release\\";
+#else			//x86
+		shaderfolder = L"..\\Release\\";
+#endif
 #endif
 	}
 
 
-	if (!vertexShader.Initialize(this->device, shaderfolder + L"vertexshader.cso"))
-		return false;
-	
+	//what is this??
 	D3D11_INPUT_ELEMENT_DESC layout[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
 
-	HRESULT hr = this->device->CreateInputLayout(
-		layout,
-		numElements,
-		this->vertexShader.GetBuffer()->GetBufferPointer(),
-		this->vertexShader.GetBuffer()->GetBufferSize(),
-		this->inputLayout.GetAddressOf());
+	//what is input layout??
 
+	if (!vertexShader.Initialize(
+		this->device, shaderfolder + L"vertexshader.cso",
+		layout,
+		numElements))
+		return false;
+
+	if (!pixelShader.Initialize(
+		this->device,
+		shaderfolder + L"pixelshader.cso"))
+		return false;
+
+
+	return true;
+}
+
+bool Graphics::InitializeScene()
+{
+	Vertex v[] = {
+		Vertex(0.0f, -0.1f),
+		Vertex(-0.1f, 0.0f),
+		Vertex(0.1f, 0.0f),
+	};
+
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(v);
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA vertexBufferData;
+	ZeroMemory(&vertexBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
+	vertexBufferData.pSysMem = v;
+	
+	HRESULT hr = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->vertexBuffer.GetAddressOf());
 	if (FAILED(hr)) {
-		ErrorLogger::Log(hr, "Failed to create input layout.");
+		ErrorLogger::Log(hr, "Failed to create vertex buffer.");
 		return false;
 	}
 

@@ -1,4 +1,4 @@
 ﻿  Graphics.cpp
-  Shaders.cpp
-  Generating Code...
+C:\Users\Kim Taekcheon\source\repos\D3DPractice\D3DPractice\Graphics\Graphics.cpp(109,19): warning C4244:  '=': conversion from 'int' to 'FLOAT', possible loss of data
+C:\Users\Kim Taekcheon\source\repos\D3DPractice\D3DPractice\Graphics\Graphics.cpp(110,20): warning C4244:  '=': conversion from 'int' to 'FLOAT', possible loss of data
   D3DPractice.vcxproj -> C:\Users\Kim Taekcheon\source\repos\D3DPractice\x64\Debug\D3DPractice.exe
