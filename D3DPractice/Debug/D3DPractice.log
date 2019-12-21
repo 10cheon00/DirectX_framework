@@ -1,12 +1,4 @@
-﻿  compilation object save succeeded; see C:\Users\Kim Taekcheon\source\repos\D3DPractice\Debug\vertexshader.cso
-  AdapterReader.cpp
-  Engine.cpp
-  ErrorLogger.cpp
-  Graphics.cpp
-  RenderWindow.cpp
-  Shaders.cpp
-  WindowContainer.cpp
-  WinMain.cpp
-  Generating Code...
-  C:\Users\Kim Taekcheon\source\repos\D3DPractice\D3DPractice\WindowContainer.cpp(141) : warning C4715: 'WindowContainer::WindowProc': not all control paths return a value
-  D3DPractice.vcxproj -> C:\Users\Kim Taekcheon\source\repos\D3DPractice\Debug\D3DPractice.exe
+﻿  Graphics.cpp
+c:\users\김택천\source\repos\directx\directx_framework\d3dpractice\graphics\graphics.cpp(109): warning C4244: '=': 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\김택천\source\repos\directx\directx_framework\d3dpractice\graphics\graphics.cpp(110): warning C4244: '=': 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  D3DPractice.vcxproj -> C:\Users\김택천\source\repos\directx\directx_framework\Debug\D3DPractice.exe

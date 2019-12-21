@@ -19,7 +19,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
-	float bgcolor[] = { 1.0f,0.0f,1.0f,1.0f };
+	float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 
 	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputlayout());
@@ -30,9 +30,9 @@ void Graphics::RenderFrame()
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	this->deviceContext->IASetVertexBuffers(
-		0, 
-		1, 
-		vertexBuffer.GetAddressOf(), 
+		0,
+		1,
+		vertexBuffer.GetAddressOf(),
 		&stride, &offset);
 
 
@@ -138,7 +138,8 @@ bool Graphics::InitializeShaders()
 
 	//what is this??
 	D3D11_INPUT_ELEMENT_DESC layout[] = {
-		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+	{"COLOR", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT,0,D3D11_APPEND_ALIGNED_ELEMENT,D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA }
 	};
 
 	UINT numElements = ARRAYSIZE(layout);
@@ -162,10 +163,10 @@ bool Graphics::InitializeShaders()
 
 bool Graphics::InitializeScene()
 {
-	Vertex v[] = {
-		Vertex(0.0f, -0.1f),
-		Vertex(-0.1f, 0.0f),
-		Vertex(0.1f, 0.0f),
+	Vertex v[] = {	//counter clockwise 
+		Vertex(0.0f,0.5f,0.0f,1.0f,0.0f),//		bottom right
+		Vertex(-0.5f,-0.5f,1.0f,0.0f,0.0f),//	bottom left
+		Vertex(0.5f,-0.5f,0.0f,0.0f,1.0f),//	top middle
 	};
 
 	D3D11_BUFFER_DESC vertexBufferDesc;
@@ -180,7 +181,7 @@ bool Graphics::InitializeScene()
 	D3D11_SUBRESOURCE_DATA vertexBufferData;
 	ZeroMemory(&vertexBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	vertexBufferData.pSysMem = v;
-	
+
 	HRESULT hr = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->vertexBuffer.GetAddressOf());
 	if (FAILED(hr)) {
 		ErrorLogger::Log(hr, "Failed to create vertex buffer.");
