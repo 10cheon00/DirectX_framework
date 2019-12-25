@@ -1,50 +1,23 @@
 #include "Graphics.h"
 
-
-
-bool Graphics::Initialize(HWND hwnd, int width, int height)
-{
-	if (!InitializeDirectX(hwnd, width, height))
+bool Graphics::Initialize(HWND hwnd, int width, int height){
+	if(!InitializeDirectX(hwnd, width, height))
 		return false;
 
-	if (!InitializeShaders())
+	if(!InitializeShaders())
 		return false;
 
-	if (!InitializeScene())
+	if(!InitializeScene())
 		return false;
 
 
 	return true;
 }
 
-void Graphics::RenderFrame()
-{
-	float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
-	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
-
-	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputlayout());
-	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
-	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-	this->deviceContext->IASetVertexBuffers(
-		0,
-		1,
-		vertexBuffer.GetAddressOf(),
-		&stride, &offset);
-
-
-	this->deviceContext->Draw(3, 0);
-	this->swapChain->Present(1/*vsync option*/, NULL);
-}
-
-bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
-{
+bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
 	std::vector<AdapterData> adapters = AdapterReader::GetAdapters();
 
-	if (adapters.size() < 1) {
+	if(adapters.size() < 1){
 		ErrorLogger::Log("No IDXGI Adapters. found.");
 		return false;
 	}
@@ -88,13 +61,13 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
 	);
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
-	if (FAILED(hr)) {
+	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(backBuffer.GetAddressOf()));
+	if(FAILED(hr)){
 		ErrorLogger::Log(hr, "Failed to create device and swapchain.");
 		return false;
 	}
 	hr = this->device->CreateRenderTargetView(backBuffer.Get(), NULL, this->renderTargetView.GetAddressOf());
-	if (FAILED(hr)) {
+	if(FAILED(hr)){
 		ErrorLogger::Log(hr, "Failed to create Render target view.");
 		return false;
 	}
@@ -112,14 +85,26 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height)
 	//Set the viewport.
 	this->deviceContext->RSSetViewports(1, &viewport);
 
+	//Create Rasterizer State
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+
+	rasterizerDesc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+	rasterizerDesc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+	hr = this->device->CreateRasterizerState(&rasterizerDesc, this->rasterizerState.GetAddressOf());
+	if(FAILED(hr)){
+		ErrorLogger::Log(hr, "Failed to create rasterizer state.");
+		return false;
+	}
+
+
 	return true;
 }
 
-bool Graphics::InitializeShaders()
-{
+bool Graphics::InitializeShaders(){
 	std::wstring shaderfolder = L"";
 #pragma region DetermineShaderPath
-	if (IsDebuggerPresent() == TRUE) {
+	if(IsDebuggerPresent() == TRUE){
 #ifdef _DEBUG	//Debug Mode
 #ifdef _WIN64	//x64
 		shaderfolder = L"..\\x64\\Debug\\";
@@ -146,13 +131,13 @@ bool Graphics::InitializeShaders()
 
 	//what is input layout??
 
-	if (!vertexShader.Initialize(
+	if(!vertexShader.Initialize(
 		this->device, shaderfolder + L"vertexshader.cso",
 		layout,
 		numElements))
 		return false;
 
-	if (!pixelShader.Initialize(
+	if(!pixelShader.Initialize(
 		this->device,
 		shaderfolder + L"pixelshader.cso"))
 		return false;
@@ -161,12 +146,12 @@ bool Graphics::InitializeShaders()
 	return true;
 }
 
-bool Graphics::InitializeScene()
-{
+bool Graphics::InitializeScene(){
+	//Triangle Buffer
 	Vertex v[] = {	//counter clockwise 
-		Vertex(0.0f,0.5f,0.0f,1.0f,0.0f),//		bottom right
-		Vertex(-0.5f,-0.5f,1.0f,0.0f,0.0f),//	bottom left
-		Vertex(0.5f,-0.5f,0.0f,0.0f,1.0f),//	top middle
+		Vertex(-0.5f,-0.5f,1.0f,0.0f,0.0f),	//	bottom left
+		Vertex(0.0f,  0.5f,1.0f,0.0f,0.0f),	//	top middle
+		Vertex(0.5f, -0.5f,1.0f,0.0f,0.0f),	//	bottom right
 	};
 
 	D3D11_BUFFER_DESC vertexBufferDesc;
@@ -183,10 +168,61 @@ bool Graphics::InitializeScene()
 	vertexBufferData.pSysMem = v;
 
 	HRESULT hr = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->vertexBuffer.GetAddressOf());
-	if (FAILED(hr)) {
+	if(FAILED(hr)){
 		ErrorLogger::Log(hr, "Failed to create vertex buffer.");
 		return false;
 	}
 
+	//Triangle 2
+	Vertex v2[] = {	//counter clockwise 
+		Vertex(-0.25f,-0.25f,1.0f,1.0f,0.0f),	//	bottom left
+		Vertex(0.0f,   0.25f,1.0f,1.0f,0.0f),	//	top middle
+		Vertex(0.25f, -0.25f,1.0f,1.0f,0.0f),	//	bottom right
+	};
+
+	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(Vertex) * ARRAYSIZE(v2);
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+
+	ZeroMemory(&vertexBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
+	vertexBufferData.pSysMem = v2;
+
+	hr = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->vertexBuffer2.GetAddressOf());
+	if(FAILED(hr)){
+		ErrorLogger::Log(hr, "Failed to create vertex buffer.");
+		return false;
+	}
 	return true;
+}
+
+void Graphics::RenderFrame(){
+	float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
+	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
+
+	this->deviceContext->IASetInputLayout(this->vertexShader.GetInputlayout());
+	this->deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	this->deviceContext->RSSetState(this->rasterizerState.Get());
+
+	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
+	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+
+	//Red Triangle
+	this->deviceContext->IASetVertexBuffers(
+		0,
+		1,
+		vertexBuffer.GetAddressOf(),
+		&stride, &offset);
+	this->deviceContext->Draw(3, 0);
+
+	//Yellow Triangle
+	this->deviceContext->IASetVertexBuffers(0, 1, vertexBuffer2.GetAddressOf(), &stride, &offset);
+	this->deviceContext->Draw(3, 0);
+
+	this->swapChain->Present(1/*vsync option*/, NULL);
 }

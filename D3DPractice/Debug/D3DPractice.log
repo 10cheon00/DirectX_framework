@@ -1,4 +1,4 @@
 ﻿  Graphics.cpp
-c:\users\김택천\source\repos\directx\directx_framework\d3dpractice\graphics\graphics.cpp(109): warning C4244: '=': 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\김택천\source\repos\directx\directx_framework\d3dpractice\graphics\graphics.cpp(110): warning C4244: '=': 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  D3DPractice.vcxproj -> C:\Users\김택천\source\repos\directx\directx_framework\Debug\D3DPractice.exe
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.cpp(82,19): warning C4244: '=': conversion from 'int' to 'FLOAT', possible loss of data
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.cpp(83,20): warning C4244: '=': conversion from 'int' to 'FLOAT', possible loss of data
+  D3DPractice.vcxproj -> E:\University\2019\D3D\directx_framework\Debug\D3DPractice.exe
