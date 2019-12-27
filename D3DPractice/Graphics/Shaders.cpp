@@ -8,6 +8,7 @@ bool VertexShader::Initialize(
 	D3D11_INPUT_ELEMENT_DESC* layoutDesc, 
 	UINT numElements)
 {
+	//Load file
 	HRESULT hr = D3DReadFileToBlob(shaderpath.c_str(), this->shader_buffer.GetAddressOf());
 	if (FAILED(hr)) {
 		std::wstring errorMsg = L"Failed to load shader : ";
@@ -16,6 +17,7 @@ bool VertexShader::Initialize(
 		return false;
 	}
 
+	//Create Vertex Shader
 	hr = device->CreateVertexShader(
 		this->shader_buffer->GetBufferPointer(),
 		this->shader_buffer->GetBufferSize(),
@@ -34,7 +36,6 @@ bool VertexShader::Initialize(
 		this->shader_buffer->GetBufferPointer(),
 		this->shader_buffer->GetBufferSize(),
 		this->inputLayout.GetAddressOf());
-
 	if (FAILED(hr)) {
 		ErrorLogger::Log(hr, "Failed to create input layout.");
 		return false;
@@ -65,6 +66,7 @@ bool PixelShader::Initialize(Microsoft::WRL::ComPtr<ID3D11Device>& device, std::
 		ErrorLogger::Log(hr, errorMsg);
 		return false;
 	}
+
 	hr = device->CreatePixelShader(
 		this->shader_buffer->GetBufferPointer(),
 		this->shader_buffer->GetBufferSize(),

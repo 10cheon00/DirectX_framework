@@ -1,4 +1,71 @@
-﻿  Graphics.cpp
-E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.cpp(82,19): warning C4244: '=': conversion from 'int' to 'FLOAT', possible loss of data
-E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.cpp(83,20): warning C4244: '=': conversion from 'int' to 'FLOAT', possible loss of data
-  D3DPractice.vcxproj -> E:\University\2019\D3D\directx_framework\Debug\D3DPractice.exe
+﻿  Engine.cpp
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,7): error C2039: 'unique_ptr': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(58): message : see reference to class template instantiation 'VertexBuffer<T>' being compiled
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,17): error C2143: syntax error: missing ';' before '<'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2238: unexpected token(s) preceding ';'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): warning C4183: 'VerteBuffer': missing return type; assumed to be a member function returning 'int'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(40,23): error C2039: 'make_unique': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2059: syntax error: ')'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.h(29): message : see reference to class template instantiation 'VertexBuffer<Vertex>' being compiled
+  ErrorLogger.cpp
+  Graphics.cpp
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,7): error C2039: 'unique_ptr': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\vector(24): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(58): message : see reference to class template instantiation 'VertexBuffer<T>' being compiled
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,17): error C2143: syntax error: missing ';' before '<'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2238: unexpected token(s) preceding ';'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): warning C4183: 'VerteBuffer': missing return type; assumed to be a member function returning 'int'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(40,23): error C2039: 'make_unique': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\vector(24): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2059: syntax error: ')'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.h(29): message : see reference to class template instantiation 'VertexBuffer<Vertex>' being compiled
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.cpp(123,19): warning C4244: '=': conversion from 'int' to 'FLOAT', possible loss of data
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.cpp(124,20): warning C4244: '=': conversion from 'int' to 'FLOAT', possible loss of data
+  KeyboardClass.cpp
+  RenderWindow.cpp
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,7): error C2039: 'unique_ptr': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(58): message : see reference to class template instantiation 'VertexBuffer<T>' being compiled
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,17): error C2143: syntax error: missing ';' before '<'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2238: unexpected token(s) preceding ';'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): warning C4183: 'VerteBuffer': missing return type; assumed to be a member function returning 'int'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(40,23): error C2039: 'make_unique': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2059: syntax error: ')'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.h(29): message : see reference to class template instantiation 'VertexBuffer<Vertex>' being compiled
+  Shaders.cpp
+  WindowContainer.cpp
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,7): error C2039: 'unique_ptr': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(58): message : see reference to class template instantiation 'VertexBuffer<T>' being compiled
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,17): error C2143: syntax error: missing ';' before '<'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2238: unexpected token(s) preceding ';'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): warning C4183: 'VerteBuffer': missing return type; assumed to be a member function returning 'int'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(40,23): error C2039: 'make_unique': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2059: syntax error: ')'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.h(29): message : see reference to class template instantiation 'VertexBuffer<Vertex>' being compiled
+  WinMain.cpp
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,7): error C2039: 'unique_ptr': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(58): message : see reference to class template instantiation 'VertexBuffer<T>' being compiled
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,17): error C2143: syntax error: missing ';' before '<'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2238: unexpected token(s) preceding ';'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(16,1): warning C4183: 'VerteBuffer': missing return type; assumed to be a member function returning 'int'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(40,23): error C2039: 'make_unique': is not a member of 'std'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\queue(22): message : see declaration of 'std'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\VertexBuffer.h(13,1): error C2059: syntax error: ')'
+E:\University\2019\D3D\directx_framework\D3DPractice\Graphics\Graphics.h(29): message : see reference to class template instantiation 'VertexBuffer<Vertex>' being compiled
+  Generating Code...

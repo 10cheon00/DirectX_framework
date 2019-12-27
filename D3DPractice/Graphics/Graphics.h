@@ -3,8 +3,13 @@
 #include "AdapterReader.h"
 #include "Shaders.h"
 #include "Vertex.h"
+#include "VertexBuffer.h"
 
-class Graphics {
+#include <SpriteBatch.h>
+#include <SpriteFont.h>
+#include <WICTextureLoader.h>
+
+class Graphics{
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
@@ -21,8 +26,18 @@ private:
 	VertexShader vertexShader;
 	PixelShader pixelShader;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer2;
+	VertexBuffer<Vertex> vertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> indicesBuffer;
+
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilview;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState;
 
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState;
+
+	std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> spriteFont;
+
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> myTexture;
 };
