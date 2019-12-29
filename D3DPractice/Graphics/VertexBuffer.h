@@ -12,14 +12,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
 	std::unique_ptr<UINT> stride;
 	UINT bufferSize = 0;
-public:
-	VerteBuffer(){}
 
-	ID3D11Buffer* Get() const{
+public:
+	VertexBuffer(){}
+
+	ID3D11Buffer* Get()const{
 		return buffer.Get();
 	}
 
-	ID3D11Buffer* const* GetAddressOf() const{
+	ID3D11Buffer* const* GetAddressOf()const{
 		return buffer.GetAddressOf();
 	}
 
@@ -49,7 +50,7 @@ public:
 		vertexBufferDesc.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData;
-		ZeroMemory(&vertexBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
+		ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
 		vertexBufferData.pSysMem = data;
 
 		HRESULT hr = device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, this->buffer.GetAddressOf());
@@ -57,4 +58,4 @@ public:
 	}
 };
 
-#endif  //VertexBuffer_h__
+#endif // VertexBuffer_h__

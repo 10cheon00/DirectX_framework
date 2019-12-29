@@ -61,7 +61,7 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
 	);
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(backBuffer.GetAddressOf()));
+	hr = this->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
 	if(FAILED(hr)){
 		ErrorLogger::Log(hr, "Failed to create device and swapchain.");
 		return false;
@@ -232,12 +232,6 @@ bool Graphics::InitializeScene(){
 		Vertex(0.5f, -0.5f, 1.0f, 1.0f, 1.0f),	// bottom right	[3]
 
 	};
-
-	DWORD indices[] = {
-		0,1,2,
-		0,2,3,
-	};
-	
 	//Load Vertex Data
 	HRESULT hr = this->vertexBuffer.Initialize(this->device.Get(), v, 4);
 	if(FAILED(hr)){
@@ -245,25 +239,24 @@ bool Graphics::InitializeScene(){
 		return false;
 	}
 
-	D3D11_BUFFER_DESC indexBufferDesc;
-	ZeroMemory(&indexBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(DWORD) * ARRAYSIZE(indices);
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	
-	D3D11_SUBRESOURCE_DATA indexBufferData;
-	indexBufferData.pSysMem = indices;
-	
-	hr = device->CreateBuffer(&indexBufferDesc, &indexBufferData, indicesBuffer.GetAddressOf());
-	if(FAILED(hr)){
-		ErrorLogger::Log("Failed to create indices buffer.");
-		return false;
-	}
+	DWORD indices[] = {
+		0,1,2,
+		0,2,3,
+	};
+	//Load Index Data
+	hr = this->indicesBuffer.Initialize(this->device.Get(), indices, ARRAYSIZE(indices));
 
+	//Load Texture
 	hr = DirectX::CreateWICTextureFromFile(this->device.Get(), L"Data\\Textures\\mapimg.png", nullptr/*why nullptr?*/, this->myTexture.GetAddressOf());
 	if(FAILED(hr)){
 		ErrorLogger::Log("Failed to create wic texture from file.");
+		return false;
+	}
+
+	//Initialize Constant Buffer(s)
+	hr = this->constantBuffer.Initialize(this->device.Get(), this->deviceContext.Get());
+	if(FAILED(hr)){
+		ErrorLogger::Log(hr, "Failed to initialize constant buffer.");
 		return false;
 	}
 	return true;
@@ -284,6 +277,13 @@ void Graphics::RenderFrame(){
 
 	UINT offset = 0;
 
+	//Update Constant Buffer
+	constantBuffer.data.xOffset = 0.0f;
+	constantBuffer.data.yOffset = 0.0f;
+	if(!constantBuffer.ApplyChange())
+		return;
+	this->deviceContext->VSSetConstantBuffers(0, 1, this->constantBuffer.GetAddressOf());
+
 	//Square
 	this->deviceContext->PSSetShaderResources(0, 1, this->myTexture.GetAddressOf());
 	this->deviceContext->IASetVertexBuffers(
@@ -292,7 +292,7 @@ void Graphics::RenderFrame(){
 		vertexBuffer.GetAddressOf(),
 		vertexBuffer.StridePtr(), &offset);
 	this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-	this->deviceContext->DrawIndexed(6, 0, 0);	//draw with indices
+	this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);	//draw with indices
 
 	//Draw Text
 	spriteBatch->Begin();
