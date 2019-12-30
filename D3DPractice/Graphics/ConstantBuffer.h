@@ -3,9 +3,10 @@
 #include <d3d11.h>
 #include "ConstantBufferTypes.h"
 #include <wrl/client.h>
-#include "..\\ErrorLogger.h"
+#include "../ErrorLogger.h"
 
-// what is map? and what is Constant buffer?
+// what is Map? and what is Constant buffer?
+
 template<class T>
 class ConstantBuffer{
 private:
@@ -33,7 +34,7 @@ public:
 		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		desc.MiscFlags = 0;
-		desc.ByteWidth = static_cast<UINT>(sizeof(T) + (16 - (sizeof(T) & 16)));
+		desc.ByteWidth = static_cast<UINT>(sizeof(T) + (16 - (sizeof(T) % 16)));
 		desc.StructureByteStride = 0;
 
 		HRESULT hr = device->CreateBuffer(&desc, 0, buffer.GetAddressOf());
@@ -49,6 +50,7 @@ public:
 		}
 		CopyMemory(mappedResource.pData, &data, sizeof(T));
 		this->deviceContext->Unmap(buffer.Get(), 0);
+		return true;
 	}
 };
 

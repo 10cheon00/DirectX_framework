@@ -274,12 +274,12 @@ void Graphics::RenderFrame(){
 	this->deviceContext->PSSetSamplers(0, 1, this->samplerState.GetAddressOf());
 	this->deviceContext->VSSetShader(vertexShader.GetShader(), NULL, 0);
 	this->deviceContext->PSSetShader(pixelShader.GetShader(), NULL, 0);
-
+	
 	UINT offset = 0;
 
 	//Update Constant Buffer
 	constantBuffer.data.xOffset = 0.0f;
-	constantBuffer.data.yOffset = 0.0f;
+	constantBuffer.data.yOffset = 0.5f;
 	if(!constantBuffer.ApplyChange())
 		return;
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->constantBuffer.GetAddressOf());
