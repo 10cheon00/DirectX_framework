@@ -1,7 +1,11 @@
 #include "Graphics.h"
 
 bool Graphics::Initialize(HWND hwnd, int width, int height){
-	if(!InitializeDirectX(hwnd, width, height))
+
+	this->windowWidth = width;
+	this->windowHeight = height;
+
+	if(!InitializeDirectX(hwnd))
 		return false;
 
 	if(!InitializeShaders())
@@ -14,7 +18,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height){
 	return true;
 }
 
-bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
+bool Graphics::InitializeDirectX(HWND hwnd){
 	std::vector<AdapterData> adapters = AdapterReader::GetAdapters();
 
 	if(adapters.size() < 1){
@@ -25,8 +29,8 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
 
-	scd.BufferDesc.Width = width;
-	scd.BufferDesc.Height = height;
+	scd.BufferDesc.Width = this->windowWidth;
+	scd.BufferDesc.Height = this->windowHeight;
 	scd.BufferDesc.RefreshRate.Numerator = 60;
 	scd.BufferDesc.RefreshRate.Denominator = 1;
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -74,8 +78,8 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
 
 	//Depth Stencil Buffer
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
-	depthStencilDesc.Width = width;
-	depthStencilDesc.Height = height;
+	depthStencilDesc.Width = this->windowWidth;
+	depthStencilDesc.Height = this->windowHeight;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
 	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;	//see DXGI_FORMAT.
@@ -120,8 +124,8 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = width;
-	viewport.Height = height;
+	viewport.Width = this->windowWidth;
+	viewport.Height = this->windowHeight;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 
@@ -139,12 +143,11 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
 		return false;
 	}
 
-
 	//Initialize Font
 	spriteBatch = std::make_unique<DirectX::SpriteBatch>(this->deviceContext.Get());
 	spriteFont = std::make_unique<DirectX::SpriteFont>(this->device.Get(), L"Data\\Fonts\\comic_sans_ms_16.spritefont");
 
-	//Create sample description for sampler state
+	//Create sampler description for sampler state
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -160,7 +163,6 @@ bool Graphics::InitializeDirectX(HWND hwnd, int width, int height){
 		ErrorLogger::Log(hr, "Failed to create sampler state.");
 		return false;
 	}
-
 
 	return true;
 }
@@ -221,15 +223,15 @@ bool Graphics::InitializeShaders(){
 bool Graphics::InitializeScene(){
 	//Textured Square
 	Vertex v[] = {	//clockwise?
-		Vertex(-0.5f, -0.5f, 1.0f, 0.0f, 1.0f),	// bottom left	[0]
-		Vertex(-0.5f,  0.5f, 1.0f, 0.0f, 0.0f),	// top left		[1]
-		Vertex(0.5f,  0.5f, 1.0f, 1.0f, 0.0f),	// top right	[2]
+		Vertex(-0.5f, -0.5f, 0.0f, 0.0f, 1.0f),	// bottom left	[0]
+		Vertex(-0.5f,  0.5f, 0.0f, 0.0f, 0.0f),	// top left		[1]
+		Vertex( 0.5f,  0.5f, 0.0f, 1.0f, 0.0f),	// top right	[2]
 
 		//this vertexes is meaningless repeat
 		//Vertex(-0.5f, -0.5f, 1.0f, 0.0f, 1.0f),	// bottom left
 		//Vertex( 0.5f,  0.5f, 1.0f, 1.0f, 0.0f),	// top right
 
-		Vertex(0.5f, -0.5f, 1.0f, 1.0f, 1.0f),	// bottom right	[3]
+		Vertex( 0.5f, -0.5f, 0.0f, 1.0f, 1.0f),	// bottom right	[3]
 
 	};
 	//Load Vertex Data
@@ -259,11 +261,16 @@ bool Graphics::InitializeScene(){
 		ErrorLogger::Log(hr, "Failed to initialize constant buffer.");
 		return false;
 	}
+
+	camera.SetPosition(0.0f, 0.0f, -2.0f);
+	camera.SetProjectionValues(90.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 1000.0f);
+
 	return true;
 }
 
 void Graphics::RenderFrame(){
 	float bgcolor[] = { 0.0f,0.0f,0.0f,1.0f };
+
 	this->deviceContext->ClearRenderTargetView(this->renderTargetView.Get(), bgcolor);
 	this->deviceContext->ClearDepthStencilView(this->depthStencilview.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -278,8 +285,28 @@ void Graphics::RenderFrame(){
 	UINT offset = 0;
 
 	//Update Constant Buffer
-	constantBuffer.data.xOffset = 0.0f;
-	constantBuffer.data.yOffset = 0.5f;
+	DirectX::XMMATRIX world = XMMatrixIdentity();
+	/*
+	//this codes are camera class
+	static DirectX::XMVECTOR eyePos = DirectX::XMVectorSet(0.0f, -10.0f, -2.0f, 0.0f);
+	DirectX::XMFLOAT3 eyePosFloat3;
+	DirectX::XMStoreFloat3(&eyePosFloat3, eyePos); //get data from eyePos to eyePosFloat3
+	eyePosFloat3.y += 0.01f;
+	eyePos = DirectX::XMLoadFloat3(&eyePosFloat3);	//set data from eyePosFloat3 to eyePos
+	static DirectX::XMVECTOR lookAtPos = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);	//Look at center of the world
+	static DirectX::XMVECTOR upVector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);	//Positive Y Axis = Up
+	DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(eyePos, lookAtPos, upVector);	//LH is Left-hand coordinate system
+	float fovDegrees = 90.0f;
+	float fovRadians = (fovDegrees / 360.0f) * DirectX::XM_2PI;
+	float aspectRatio = static_cast<float>(this->windowWidth) / static_cast<float>(this->windowHeight); 
+	float nearZ = 0.1f;
+	float farZ = 1000.0f;
+	DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fovDegrees, fovRadians, nearZ, farZ);
+	*/
+
+	constantBuffer.data.mat = world * camera.GetViewMatrix() * camera.GetProjectionMatrix();
+	constantBuffer.data.mat = DirectX::XMMatrixTranspose(constantBuffer.data.mat);//transform row_major format to column_major format.
+
 	if(!constantBuffer.ApplyChange())
 		return;
 	this->deviceContext->VSSetConstantBuffers(0, 1, this->constantBuffer.GetAddressOf());
