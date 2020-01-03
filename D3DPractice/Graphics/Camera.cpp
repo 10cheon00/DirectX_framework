@@ -89,8 +89,67 @@ void Camera::AdjustRotation(float x, float y, float z){
 	this->UpdateViewMatrix();
 }
 
+const XMVECTOR& Camera::GetForwardVector(){
+	return this->vec_forward;
+}
+
+const XMVECTOR& Camera::GetRightVector(){
+	return this->vec_right;
+}
+
+const XMVECTOR& Camera::GetBackwardVector(){
+	return this->vec_backward;
+}
+
+const XMVECTOR& Camera::GetLeftVector(){
+	return this->vec_left;
+}
+
+void Camera::SetLookAtPos(XMFLOAT3 lookAtPos){
+	//Verify that lookAtPos is not the same as camera Pos. 
+	//They cannot be the same as that wouldn't make sense and would result in undefined behavior.
+	if(lookAtPos.x == this->pos.x && lookAtPos.y == this->pos.y && lookAtPos.z == this->pos.z)
+		return;
+
+	//Before calculate pitch or yaw, calculate distance between CameraPos and LookAtPos
+	lookAtPos.x = this->pos.x - lookAtPos.x;
+	lookAtPos.y = this->pos.y - lookAtPos.y;
+	lookAtPos.z = this->pos.z - lookAtPos.z;
+
+	float pitch = 0.0f;
+	if(lookAtPos.y != 0.0f){
+		const float distance = sqrt(lookAtPos.x * lookAtPos.x + lookAtPos.z * lookAtPos.z);
+		pitch = atan(lookAtPos.y / distance);
+	}
+
+	float yaw = 0.0f;
+	if(lookAtPos.x != 0.0f){
+		yaw = atan(lookAtPos.x / lookAtPos.z);
+	}
+	if(lookAtPos.z > 0) yaw += XM_PI;
+	this->SetRotation(pitch, yaw, 0.0f);
+}
+
 //Updates view Matrix and also updates the movement vectors
 void Camera::UpdateViewMatrix(){
+	/*
+	//this codes are camera class
+	static DirectX::XMVECTOR eyePos = DirectX::XMVectorSet(0.0f, -10.0f, -2.0f, 0.0f);
+	DirectX::XMFLOAT3 eyePosFloat3;
+	DirectX::XMStoreFloat3(&eyePosFloat3, eyePos); //get data from eyePos to eyePosFloat3
+	eyePosFloat3.y += 0.01f;
+	eyePos = DirectX::XMLoadFloat3(&eyePosFloat3);	//set data from eyePosFloat3 to eyePos
+	static DirectX::XMVECTOR lookAtPos = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);	//Look at center of the world
+	static DirectX::XMVECTOR upVector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);	//Positive Y Axis = Up
+	DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH(eyePos, lookAtPos, upVector);	//LH is Left-hand coordinate system
+	float fovDegrees = 90.0f;
+	float fovRadians = (fovDegrees / 360.0f) * DirectX::XM_2PI;
+	float aspectRatio = static_cast<float>(this->windowWidth) / static_cast<float>(this->windowHeight);
+	float nearZ = 0.1f;
+	float farZ = 1000.0f;
+	DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(fovDegrees, fovRadians, nearZ, farZ);
+	*/
+
 	//Calculate camera rotation Matrix
 	XMMATRIX camRotationMatrix = XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z);
 	//Calculate unit Vector of cam target based off camera forward value transformed by cam rotaion Matrix.
@@ -101,4 +160,12 @@ void Camera::UpdateViewMatrix(){
 	XMVECTOR upDir = XMVector3TransformCoord(this->DEFAULT_UP_VECTOR, camRotationMatrix);
 	//Rebuild view Matrix
 	this->viewMatrix = XMMatrixLookAtLH(this->posVector, camTarget, upDir);
+
+	XMMATRIX vecRotationMatrix = XMMatrixRotationRollPitchYaw(0.0f, this->rot.y, 0.0f);
+	this->vec_forward = XMVector3TransformCoord(this->DEFAULT_FORWARD_VECTOR, vecRotationMatrix);
+	this->vec_backward = XMVector3TransformCoord(this->DEFAULT_BACKWARD_VECTOR, vecRotationMatrix);
+	this->vec_left = XMVector3TransformCoord(this->DEFAULT_LEFT_VECTOR, vecRotationMatrix);
+	this->vec_right = XMVector3TransformCoord(this->DEFAULT_RIGHT_VECTOR, vecRotationMatrix);
+
+
 }

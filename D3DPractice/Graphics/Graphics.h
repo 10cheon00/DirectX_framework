@@ -15,6 +15,9 @@ class Graphics{
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
+	
+	Camera camera;
+
 private:
 	bool InitializeDirectX(HWND hwnd);
 	bool InitializeShaders();
@@ -47,5 +50,4 @@ private:
 	int windowWidth;
 	int windowHeight;
 
-	Camera camera;
 };
