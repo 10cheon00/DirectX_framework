@@ -1,5 +1,4 @@
 #include "WindowContainer.h"
-#include <memory>
 
 WindowContainer::WindowContainer(){
 	static bool raw_input_initialize = false;
@@ -17,7 +16,11 @@ WindowContainer::WindowContainer(){
 	}
 }
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT WindowContainer::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
+	if(ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
+		return true;
+
 	switch(uMsg){
 	//KeyboardMsgs.
 	case WM_KEYDOWN:

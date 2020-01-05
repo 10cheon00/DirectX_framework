@@ -103,6 +103,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,6 +119,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,6 +138,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -154,6 +157,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -162,6 +166,11 @@
     <ClCompile Include="ErrorLogger.cpp" />
     <ClCompile Include="Graphics\Graphics.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
+    <ClCompile Include="Graphics\imgui\imgui.cpp" />
+    <ClCompile Include="Graphics\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Graphics\imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Graphics\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Graphics\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Keyboard\KeyboardClass.cpp" />
     <ClCompile Include="Keyboard\KeyboardEvent.cpp" />
     <ClCompile Include="Mouse\MouseClass.cpp" />
@@ -169,6 +178,7 @@
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Graphics\Shaders.cpp" />
     <ClCompile Include="StringConverter.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WindowContainer.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
@@ -180,6 +190,14 @@
     <ClInclude Include="Graphics\ConstantBuffer.h" />
     <ClInclude Include="Graphics\ConstantBufferTypes.h" />
     <ClInclude Include="Graphics\Graphics.h" />
+    <ClInclude Include="Graphics\imgui\imconfig.h" />
+    <ClInclude Include="Graphics\imgui\imgui.h" />
+    <ClInclude Include="Graphics\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="Graphics\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Graphics\imgui\imgui_internal.h" />
+    <ClInclude Include="Graphics\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Graphics\imgui\imstb_textedit.h" />
+    <ClInclude Include="Graphics\imgui\imstb_truetype.h" />
     <ClInclude Include="Graphics\IndexBuffer.h" />
     <ClInclude Include="Graphics\VertexBuffer.h" />
     <ClInclude Include="Keyboard\KeyboardClass.h" />
@@ -190,6 +208,7 @@
     <ClInclude Include="Graphics\Shaders.h" />
     <ClInclude Include="StringConverter.h" />
     <ClInclude Include="Graphics\Vertex.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="WindowContainer.h" />
   </ItemGroup>
   <ItemGroup>

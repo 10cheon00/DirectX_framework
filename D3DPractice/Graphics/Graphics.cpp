@@ -4,6 +4,7 @@ bool Graphics::Initialize(HWND hwnd, int width, int height){
 
 	this->windowWidth = width;
 	this->windowHeight = height;
+	this->fpsTimer.Start(); 
 
 	if(!InitializeDirectX(hwnd))
 		return false;
@@ -14,6 +15,13 @@ bool Graphics::Initialize(HWND hwnd, int width, int height){
 	if(!InitializeScene())
 		return false;
 
+	//Setup ImGui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplWin32_Init(hwnd);
+	ImGui_ImplDX11_Init(this->device.Get(), this->deviceContext.Get());
+	ImGui::StyleColorsDark();
 
 	return true;
 }
@@ -285,7 +293,9 @@ void Graphics::RenderFrame(){
 	UINT offset = 0;
 
 	//Update Constant Buffer 
-	DirectX::XMMATRIX world = XMMatrixIdentity();
+	static float translationOffset[3] = { 0.0f,0.0f,0.0f };
+	XMMATRIX world = XMMatrixTranslation(translationOffset[0], translationOffset[1], translationOffset[2]);
+	//DirectX::XMMATRIX world = XMMatrixIdentity();
 		
 	constantBuffer.data.mat = world * camera.GetViewMatrix() * camera.GetProjectionMatrix();
 	constantBuffer.data.mat = DirectX::XMMatrixTranspose(constantBuffer.data.mat);//transform row_major format to column_major format.
@@ -304,10 +314,39 @@ void Graphics::RenderFrame(){
 	this->deviceContext->IASetIndexBuffer(indicesBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	this->deviceContext->DrawIndexed(indicesBuffer.BufferSize(), 0, 0);	//draw with indices
 
-	//Draw Text
+	//Draw FPS
+	static int fpsCounter = 0;
+	static std::string fpsString = "FPS : 0";
+	fpsCounter += 1;
+	if(fpsTimer.GetMilisecondsElapsed() > 1000.0f){
+		fpsString = "FPS : " + std::to_string(fpsCounter);
+		fpsCounter = 0;
+		fpsTimer.Restart();
+	}
 	spriteBatch->Begin();
-	spriteFont->DrawString(spriteBatch.get(), L"HELLO WORLD", DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
+	spriteFont->DrawString(spriteBatch.get(), fpsString.c_str(), DirectX::XMFLOAT2(0, 0), DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f));
 	spriteBatch->End();
 
-	this->swapChain->Present(1/*vsync option*/, NULL);
+
+	static int counter = 0;
+	//Start the Dear ImGui frame
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+	//Create ImGui Test Window
+	ImGui::Begin("Test");
+	ImGui::Text("This is example text.\nhi!");
+	if(ImGui::Button("Click Me!\nClick!"))
+		counter += 1;
+	ImGui::SameLine();
+	std::string clickCount = "clickCount : " + std::to_string(counter);
+	ImGui::Text(clickCount.c_str());
+	ImGui::DragFloat3("Translation X/Y/Z", translationOffset, 0.1f, -5.0f, 5.0f);
+	ImGui::End();
+	//Assemble Together Draw Data
+	ImGui::Render();
+	//Render Draw Data
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	this->swapChain->Present(0/*vsync option*/, NULL);
 }
